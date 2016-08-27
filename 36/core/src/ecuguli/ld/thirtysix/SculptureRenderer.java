@@ -1,5 +1,6 @@
 package ecuguli.ld.thirtysix;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -15,18 +16,35 @@ public class SculptureRenderer {
     private Sculpture   sculpture;
     private ModelBatch  modelBatch;
     private ModelInstance model;
+    private OrthographicCamera camera;
 
     public SculptureRenderer(Sculpture sculpture, int width, int height){
-        colorBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+        colorBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
         modelBatch = new ModelBatch();
         this.sculpture = sculpture;
     }
 
-    public Texture renderSculpture(Camera camera){
+    public Texture renderSculpture(){
+        camera = new OrthographicCamera(sculpture.getWidth() + 10, sculpture.getHeight() + 10);
+        camera.position.set(sculpture.getHeight() * 4, sculpture.getHeight() * 4, sculpture.getHeight() * 4);
+        camera.lookAt(0, 0, 0);
+        camera.near = 0;
+        camera.far  = 10000;
+
+        model = new ModelInstance(fromSculpture());
+
         colorBuffer.bind();
-        modelBatch.begin(camera);
-        modelBatch.render(model);
+        {
+            camera.update();
+            Gdx.gl.glClearColor(0, 0, 0, 0);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+            Gdx.gl.glViewport(0, 0, colorBuffer.getWidth(), colorBuffer.getHeight());
+            modelBatch.begin(camera);
+            modelBatch.render(model);
+            modelBatch.end();
+        }
         colorBuffer.end();
+        return colorBuffer.getColorBufferTexture();
     }
 
     private Model fromSculpture(){
@@ -38,7 +56,6 @@ public class SculptureRenderer {
                 for(int z = 0; z < sculpture.getLength(); z++)
                 if(sculpture.get(x, y, z) != 0){
                     float color = sculpture.get(x, y, z);
-                    System.out.println(color);
                     Node node = builder.node();
                     node.id = x + " " + y + " " + z;
                     node.translation.set(x, y, z);
@@ -53,43 +70,30 @@ public class SculptureRenderer {
                         MeshPartBuilder.VertexInfo v4 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 1, 1).setNor(0, 0, 1);
                         meshBuilder.rect(v1, v2, v3, v4);
                     }{
-                        Node nodeRotate = builder.node();
-                        nodeRotate.id = x + " " + y + " " + z + "_back";
-                        nodeRotate.rotation.setEulerAngles(90, 0, 0);
                         MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 0, 0).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 0, 1).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v3 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 0, 0).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v4 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 0, 0).setNor(0, 0, 1);
                         meshBuilder.rect(v1, v2, v3, v4);
                     }{
-                        Node nodeRotate = builder.node();
-                        nodeRotate.id = x + " " + y + " " + z + "_right";
-                        nodeRotate.rotation.setEulerAngles(0, 90, 0);
                         MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 1, 1).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 1, 1).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v3 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 0, 1).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v4 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 0, 1).setNor(0, 0, 1);
                         meshBuilder.rect(v1, v2, v3, v4);
                     }{
-                        Node nodeRotate = builder.node();
-                        nodeRotate.id = x + " " + y + " " + z + "_left";
-                        nodeRotate.rotation.setEulerAngles(0, 90, 0);
                         MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 0, 0).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 0, 0).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v3 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 1, 0).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v4 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 1, 0).setNor(0, 0, 1);
                         meshBuilder.rect(v1, v2, v3, v4);
                     }{
-                        Node nodeRotate = builder.node();
-                        nodeRotate.id = x + " " + y + " " + z + "_top";
                         MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 1, 1).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 1, 0).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v3 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 0, 0).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v4 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(0, 0, 1).setNor(0, 0, 1);
                         meshBuilder.rect(v1, v2, v3, v4);
                     }{
-                        Node nodeRotate = builder.node();
-                        nodeRotate.id = x + " " + y + " " + z + "_bottom";
                         MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 1, 0).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 1, 1).setNor(0, 0, 1);
                         MeshPartBuilder.VertexInfo v3 = new MeshPartBuilder.VertexInfo().setCol(color, color, color, 255f).setPos(1, 0, 1).setNor(0, 0, 1);
@@ -98,5 +102,9 @@ public class SculptureRenderer {
                     }
                 }
         return builder.end();
+    }
+
+    public void dispose(){
+        modelBatch.dispose();
     }
 }
