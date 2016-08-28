@@ -1,26 +1,33 @@
 package ecuguli.ld.thirtysix;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
-public class GameScreen implements Screen {
+public class SculptingScreen implements Screen {
 
     private OrthographicCamera camera;
 
     // Characters
-    private Texture king_face;
-    private Texture pleb_face;
+    private Texture pleb;
+    private Texture background;
+    private Texture table;
 
-    public GameScreen(){
-        king_face = new Texture(Gdx.files.internal("ecumenenoframe.png"));
-        pleb_face = new Texture(Gdx.files.internal("rangulinoframe.png"));
+    private Sculpture sculpture;
+
+    public SculptingScreen(){
+        pleb       = new Texture(Gdx.files.internal("pleb.png"));
+        background = new Texture(Gdx.files.internal("sculpting.png"));
+        table      = new Texture(Gdx.files.internal("table.png"));
+        sculpture = new Sculpture(35, 56);
     }
 
     @Override
     public void show() {
+
     }
 
     @Override
@@ -31,7 +38,12 @@ public class GameScreen implements Screen {
         camera.update();
         SculptureSimulator.getInstance().batch.setProjectionMatrix(camera.combined);
         SculptureSimulator.getInstance().batch.begin();
+        SculptureSimulator.getInstance().batch.draw(background, 0, 0);
+        SculptureSimulator.getInstance().batch.draw(table, 0, 0);
+        SculptureSimulator.getInstance().batch.draw(pleb, Gdx.graphics.getWidth() - pleb.getWidth(), pleb.getHeight());
         SculptureSimulator.getInstance().batch.end();
+
+        sculpture.render(125, 230, 5);
     }
 
     @Override
@@ -60,4 +72,5 @@ public class GameScreen implements Screen {
     public void dispose() {
 
     }
+
 }

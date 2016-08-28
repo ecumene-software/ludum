@@ -3,7 +3,6 @@ package ecuguli.ld.thirtysix;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,8 +22,11 @@ public class MenuScreen implements Screen, InputProcessor {
     private Sprite background;
 
     private BitmapFont font;
+    private boolean firstTime;
 
-    public MenuScreen(){
+    public MenuScreen(boolean firstTime){
+        this.firstTime = firstTime;
+
         author_1 = new Texture(Gdx.files.internal("ecumenenoframe.png"));
         author_2 = new Texture(Gdx.files.internal("rangulinoframe.png"));
 
@@ -45,6 +47,7 @@ public class MenuScreen implements Screen, InputProcessor {
     private float logo2Y = -100000;
     private float authorsX = -300000;
     private float x;
+    private float mx, my;
 
     @Override
     public void render(float delta) {
@@ -65,7 +68,7 @@ public class MenuScreen implements Screen, InputProcessor {
         SculptureSimulator.getInstance().batch.setProjectionMatrix(camera.combined);
         SculptureSimulator.getInstance().batch.begin();
         float logoWidth = logo_1.getWidth();
-        SculptureSimulator.getInstance().batch.draw(background, 0, 0);
+        SculptureSimulator.getInstance().batch.draw(background, (mx - Gdx.graphics.getWidth()/2)*.015f, (my - Gdx.graphics.getHeight()/2)*.015f, background.getWidth() * 1.2f, background.getHeight() * 1.2f);
         SculptureSimulator.getInstance().batch.draw(logo_1, (Gdx.graphics.getWidth()-logoWidth)/2 , logo1Y);
         SculptureSimulator.getInstance().batch.draw(logo_2, (Gdx.graphics.getWidth()-logoWidth)/2 , logo2Y);
         SculptureSimulator.getInstance().batch.draw(play_button, (Gdx.graphics.getWidth()-play_button.getWidth())/2 , (logo2Y - play_button.getHeight() - 20)+((float)Math.abs(Math.cos(x))*20));
@@ -102,6 +105,10 @@ public class MenuScreen implements Screen, InputProcessor {
 
     }
 
+    public boolean isFirstTime() {
+        return firstTime;
+    }
+
     @Override
     public boolean keyDown(int i) {
         return false;
@@ -119,7 +126,6 @@ public class MenuScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int i, int i1, int i2, int i3) {
-        SculptureSimulator.getInstance().setScreen(new GameScreen());
         return false;
     }
 
@@ -130,6 +136,8 @@ public class MenuScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchUp(int i, int i1, int i2, int i3) {
+        if(isFirstTime()) SculptureSimulator.getInstance().setScreen(new TutorialScreen());
+        else              SculptureSimulator.getInstance().setScreen(new SculptingScreen());
         return false;
     }
 
@@ -140,6 +148,8 @@ public class MenuScreen implements Screen, InputProcessor {
 
     @Override
     public boolean mouseMoved(int i, int i1) {
+        mx = i;
+        my = i1;
         return false;
     }
 }
