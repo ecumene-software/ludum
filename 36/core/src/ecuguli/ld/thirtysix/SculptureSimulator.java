@@ -13,7 +13,7 @@ public final class SculptureSimulator extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new GameScreen());
+		setScreen(new MenuScreen());
 	}
 
 	@Override

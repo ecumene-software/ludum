@@ -4,18 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class GameScreen implements Screen {
 
     private OrthographicCamera camera;
-    private Sculpture          sculpture;
-    private SculptureRenderer  renderer;
+
+    // Characters
+    private Texture king_face;
+    private Texture pleb_face;
 
     public GameScreen(){
-        sculpture = new Sculpture(10, 10, 10);
-        sculpture.sculpt(0, 9, 0);
-        renderer = new SculptureRenderer(sculpture, 1200, 900);
+        king_face = new Texture(Gdx.files.internal("ecumenenoframe.png"));
+        pleb_face = new Texture(Gdx.files.internal("rangulinoframe.png"));
     }
 
     @Override
@@ -30,10 +32,6 @@ public class GameScreen implements Screen {
         camera.update();
         SculptureSimulator.getInstance().batch.setProjectionMatrix(camera.combined);
         SculptureSimulator.getInstance().batch.begin();
-        Sprite s = new Sprite(renderer.renderSculpture());
-        s.flip(false, true);
-        SculptureSimulator.getInstance().batch.draw(s, 0, 0);
-        SculptureSimulator.getInstance().batch.getShader().begin();
         SculptureSimulator.getInstance().batch.end();
     }
 
@@ -61,6 +59,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        renderer.dispose();
+
     }
 }
