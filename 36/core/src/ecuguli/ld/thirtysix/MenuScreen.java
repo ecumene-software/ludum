@@ -1,13 +1,16 @@
 package ecuguli.ld.thirtysix;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class MenuScreen implements Screen {
+public class MenuScreen implements Screen, InputProcessor {
 
     private OrthographicCamera camera;
     // Authors
@@ -17,6 +20,9 @@ public class MenuScreen implements Screen {
     private Sprite logo_1;
     private Sprite logo_2;
     private Sprite play_button;
+    private Sprite background;
+
+    private BitmapFont font;
 
     public MenuScreen(){
         author_1 = new Texture(Gdx.files.internal("ecumenenoframe.png"));
@@ -25,15 +31,19 @@ public class MenuScreen implements Screen {
         logo_1 = new Sprite(new Texture(Gdx.files.internal("logo.png")));
         logo_2 = new Sprite(new Texture(Gdx.files.internal("sublogo.png")));
         play_button = new Sprite(new Texture(Gdx.files.internal("play.png")));
+        background = new Sprite(new Texture(Gdx.files.internal("background.png")));
+
+        font = new BitmapFont(Gdx.files.internal("font.fnt"));
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(this);
     }
 
     private float logo1Y = 1000;
     private float logo2Y = -100000;
+    private float authorsX = -300000;
     private float x;
 
     @Override
@@ -42,22 +52,26 @@ public class MenuScreen implements Screen {
 
         float logo1TargetY = (Gdx.graphics.getHeight()/2);
         float logo2TargetY = ((Gdx.graphics.getHeight()/2)-(logo_1.getHeight())/2)-20;
+        float authorsTargetX = 10;
 
         Gdx.gl.glClearColor(0.564705882f, 0.384313725f, 0.53725490196f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         logo1Y += ((logo1TargetY - logo1Y) * .9)*(delta *4);
         logo2Y -= ((logo2Y - logo2TargetY) * .9)*(delta *4);
+        authorsX += (authorsTargetX-authorsX * .9)*(delta *4);
 
         camera.update();
         SculptureSimulator.getInstance().batch.setProjectionMatrix(camera.combined);
         SculptureSimulator.getInstance().batch.begin();
         float logoWidth = logo_1.getWidth();
+        SculptureSimulator.getInstance().batch.draw(background, 0, 0);
         SculptureSimulator.getInstance().batch.draw(logo_1, (Gdx.graphics.getWidth()-logoWidth)/2 , logo1Y);
         SculptureSimulator.getInstance().batch.draw(logo_2, (Gdx.graphics.getWidth()-logoWidth)/2 , logo2Y);
         SculptureSimulator.getInstance().batch.draw(play_button, (Gdx.graphics.getWidth()-play_button.getWidth())/2 , (logo2Y - play_button.getHeight() - 20)+((float)Math.abs(Math.cos(x))*20));
-        SculptureSimulator.getInstance().batch.draw(author_1, (Gdx.graphics.getWidth()-play_button.getWidth())/2 - author_1.getWidth(), logo2Y - author_1.getHeight() - play_button.getHeight() - 10);
-        SculptureSimulator.getInstance().batch.draw(author_2, (Gdx.graphics.getWidth()-play_button.getWidth())/2 - author_1.getWidth(), logo2Y - author_2.getHeight() - play_button.getHeight() - 10);
+        font.draw(SculptureSimulator.getInstance().batch, "M A D E  B Y ", authorsX, author_1.getHeight() + 35);
+        SculptureSimulator.getInstance().batch.draw(author_1, authorsX + author_1.getWidth(), 5);
+        SculptureSimulator.getInstance().batch.draw(author_2, authorsX, 5);
         SculptureSimulator.getInstance().batch.end();
     }
 
@@ -86,5 +100,46 @@ public class MenuScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public boolean keyDown(int i) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int i) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char c) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int i, int i1, int i2, int i3) {
+        SculptureSimulator.getInstance().setScreen(new GameScreen());
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int i, int i1, int i2) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int i) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int i, int i1) {
+        return false;
     }
 }
