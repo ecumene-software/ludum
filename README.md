@@ -1,6 +1,5 @@
-Gotta Dare Fast
+Ludum Dare Competitions - My Games
 -----
 
-Can't type must dare
-
-Go elsewhere, if you don't do the dare
+This repository contains the source to all my ludum dare games!
+Enjoy!
