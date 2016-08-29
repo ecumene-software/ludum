@@ -39,7 +39,7 @@ public class TutorialScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         float x1Target = -250;
-        float x2Target = -150;
+        float x2Target = -390;
         float x3Target = -350;
         float y1Target = -120;
 
@@ -56,7 +56,7 @@ public class TutorialScreen implements Screen, InputProcessor {
         SculptureSimulator.getInstance().batch.draw(scroll, -width/2, -height/2, width, height);
         font.setColor(new Color(0.4f, 0.4f, 0.4f, 255));
         font.draw(SculptureSimulator.getInstance().batch, "THE KING IS OPENING AN ART GALLERY", x1, 60);
-        font.draw(SculptureSimulator.getInstance().batch, "YOU ARE TASKED TO MAKE A SCULPTURE TO HIS TASTES", x2, 0);
+        font.draw(SculptureSimulator.getInstance().batch, "YOU ARE HIS ROYAL SCULPTOR, TASKED TO MAKE SCULPTURES TO HIS TASTES", x2, 0);
         font.draw(SculptureSimulator.getInstance().batch, "YOUR WORK WILL BE PRESENTED TO HIS MAJESTY BY YOU PERSONALLY", x3, -60);
         font.draw(SculptureSimulator.getInstance().batch, "(Click!)", -20, (float) Math.abs(Math.sin(x)) * 20f + y1);
         SculptureSimulator.getInstance().batch.end();
