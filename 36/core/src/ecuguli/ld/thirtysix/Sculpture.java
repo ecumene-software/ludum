@@ -29,6 +29,10 @@ public class Sculpture {
         renderer.end();
     }
 
+    public void onMouseClick(int sculptureX, int sculptureY){
+
+    }
+
     public int getWidth(){
         return sculpture.length;
     }
